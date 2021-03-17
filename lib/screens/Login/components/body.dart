@@ -8,7 +8,7 @@ import 'package:flutter_auth/components/rounded_input_field.dart';
 import 'package:flutter_auth/components/rounded_password_field.dart';
 import 'package:flutter_auth/model/request/user_param.dart';
 import 'package:flutter_auth/provider/auth_provider.dart';
-import 'package:flutter_auth/screens/home_screen.dart';
+import 'package:flutter_auth/screens/Home/home_screen.dart';
 import 'package:flutter_svg/svg.dart';
 
 class Body extends StatefulWidget {
@@ -23,7 +23,14 @@ class Body extends StatefulWidget {
 class _BodyState extends State<Body> with CommonWidgets {
   TextEditingController _txtEmailController = TextEditingController();
   TextEditingController _txtPasswordController = TextEditingController();
-  bool _isLoging = false;
+  bool _isLogging = false;
+
+  @override
+  void initState() {
+    _txtEmailController.text = 'Shanna@melissa.tv';
+    _txtPasswordController.text = '90566-7771';
+    super.initState();
+  }
 
   @override
   void dispose() {
@@ -61,7 +68,7 @@ class _BodyState extends State<Body> with CommonWidgets {
               controller: _txtPasswordController,
               onChanged: (value) {},
             ),
-            _isLoging
+            _isLogging
                 ? Center(
                     child: CircularProgressIndicator(),
                   )
@@ -105,7 +112,7 @@ class _BodyState extends State<Body> with CommonWidgets {
     // } finally {
     //
     // }
-    setState(() => _isLoging = true);
+    setState(() => _isLogging = true);
     Network()
         .login(param: params)
         .then((value) {
@@ -119,7 +126,7 @@ class _BodyState extends State<Body> with CommonWidgets {
           showAlert(context, body: 'error $error', title: 'Result');
     })
         .whenComplete(() {
-          setState(() => _isLoging = false);
+          setState(() => _isLogging = false);
     });
   }
 }

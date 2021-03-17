@@ -14,8 +14,7 @@ class Network {
     try {
       final url = AppUrl.user + '?email=${param.email}&zipcode=${param.password}';
       debugPrint('url is $url');
-      final response = await http
-          .get(url);
+      final response = await http.get(url);
       if (response.statusCode == 200) {
         final result = json.decode(response.body) as List<dynamic>;
         return User.fromJson(result.first);

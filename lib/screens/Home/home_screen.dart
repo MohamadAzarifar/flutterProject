@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_auth/components/common_widget.dart';
+import 'package:flutter_auth/components/rounded_input_field.dart';
 import 'package:flutter_auth/model/response/post_model.dart';
 import 'package:flutter_auth/provider/auth_provider.dart';
+import 'package:flutter_auth/screens/Home/PostView.dart';
 
 class HomeScreen extends StatefulWidget {
   @override
@@ -10,6 +12,7 @@ class HomeScreen extends StatefulWidget {
 
 class _HomeScreenState extends State<HomeScreen> with CommonWidgets {
   bool _isLoading = true;
+  String _txtSearch;
   List<PostModel> posts = [];
 
   @override
@@ -19,8 +22,16 @@ class _HomeScreenState extends State<HomeScreen> with CommonWidgets {
   }
 
   @override
+  void dispose() {
+    super.dispose();
+  }
+
+  @override
   Widget build(BuildContext context) {
-    return Scaffold(body: _isLoading ? _vwIndicator() : _vwList());
+    return Scaffold(
+      appBar: AppBar(),
+      body: _isLoading ? _vwIndicator() : _vwContent(),
+    );
   }
 
   _vwIndicator() {
@@ -29,16 +40,39 @@ class _HomeScreenState extends State<HomeScreen> with CommonWidgets {
     );
   }
 
+  _vwContent() {
+    return Column(
+      children: [
+        RoundedInputField(
+          hintText: 'Search',
+          icon: Icons.search,
+          onChanged: (value) {
+            setState(() {
+              _txtSearch = value;
+            });
+          },
+        ),
+        Expanded(
+          child: _vwList(),
+        )
+      ],
+    );
+  }
+
   _vwList() {
+    final filteredPost = (_txtSearch?.isEmpty ?? true)
+        ? posts
+        : posts.where(
+            (element) {
+              return (element.body.contains(_txtSearch) &&
+                  element.title.contains(_txtSearch));
+            },
+          ).toList();
     return ListView.builder(
-        itemCount: posts.length,
+        itemCount: filteredPost.length,
         itemBuilder: (context, index) {
-          return GestureDetector(
-            child: Container(
-              margin: EdgeInsets.symmetric(horizontal: 12, vertical: 32),
-              color: Colors.green,
-              child: Text(posts[index].body),
-            ),
+          return PostView(
+            post: filteredPost[index],
           );
         });
   }
